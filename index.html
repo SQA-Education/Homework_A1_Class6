@@ -284,17 +284,17 @@ function startRec(){
   recognition.lang='en-US';
   recognition.onresult=function(e){
     var sessionFinal='',interim='';
-    for(var i=0;i<e.results.length;i++){
-      if(e.results[i].isFinal)sessionFinal+=e.results[i][0].transcript+' ';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)persistedSpokenText+=e.results[i][0].transcript+' ';
       else interim+=e.results[i][0].transcript+' ';
     }
-    spokenTranscript=(persistedSpokenText+sessionFinal).trim();
+    if(persistedSpokenText.length>2000)persistedSpokenText=persistedSpokenText.slice(0,2000);spokenTranscript=persistedSpokenText.trim();
     document.getElementById('speakTranscriptText').textContent=(persistedSpokenText+sessionFinal+interim).trim();
     document.getElementById('speakTranscriptBox').style.display='block';
   };
   recognition.onerror=function(){};
   recognition.onend=function(){
-    persistedSpokenText=spokenTranscript?spokenTranscript+' ':'';
+    
     if(isRec){ try{recognition.start();}catch(e){} }
   };
   try{recognition.start();}catch(e){}
